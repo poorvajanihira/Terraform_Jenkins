@@ -2,47 +2,46 @@ pipeline {
     agent any
 
     environment {
-        TF_WORKSPACE = "Testing" // Change to the desired Terraform workspace
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key') // Use Jenkins Credentials for AWS
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                // Clone the GitHub repository
-                git branch: 'main', url: 'https://github.com/your-username/your-repository.git'
+                // Clone your Git repository
+                git branch: 'main', url: 'https://github.com/poorvajanihira/Terraform_Jenkins.git'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                // Initialize Terraform
+                // Initialize Terraform in the workspace
                 sh 'terraform init'
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                // Generate a plan
+                // Show the planned changes
                 sh 'terraform plan -out=tfplan'
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                // Apply the changes
-                input message: "Approve Terraform Apply?", ok: "Apply"
-                sh 'terraform apply tfplan'
+                // Apply the planned changes
+                sh 'terraform apply -auto-approve tfplan'
             }
         }
     }
 
     post {
         always {
-            // Cleanup or notifications
-            echo 'Pipeline completed!'
+            echo 'Pipeline finished!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed. Check logs for details.'
         }
     }
 }
