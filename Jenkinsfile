@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Clone your Git repository
-                git branch: 'main', url: 'https://github.com/poorvajanihira/Terraform_Jenkins.git'
+                git branch: 'master', url: 'https://github.com/poorvajanihira/Terraform_Jenkins.git'
             }
         }
 
